@@ -20,6 +20,6 @@ export const saveSlice = createProducer(initalState, {
 
 	patchPlayerSave: (state, player: Player, patch: Partial<PlayerSave>) =>
 		produce(state, (draft) => {
-			draft.set(player, { ...(draft.get(player) as PlayerSave), ...patch });
+			draft.set(player, { ...(state.get(player) as PlayerSave), ...patch});
 		}),
 });

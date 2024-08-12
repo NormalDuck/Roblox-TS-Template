@@ -1,5 +1,5 @@
-import { OnInit, Service } from "@flamework/core";
-import { createCollection, setConfig } from "@rbxts/lapis";
+import { Service } from "@flamework/core";
+import { Collection, createCollection, setConfig } from "@rbxts/lapis";
 import DataStoreServiceMock from "@rbxts/lapis-mockdatastore";
 import { RunService } from "@rbxts/services";
 import { OnPlayerJoin } from "server/hooks";
@@ -9,20 +9,20 @@ import { selectPlayerSave } from "shared/store/save/save-selectors";
 import { DefaultPlayerSave, PlayerSave } from "shared/store/save/save-types";
 
 @Service()
-export class PlayerSaveService implements OnInit, OnPlayerJoin {
-	onInit(): void {
+export class PlayerSaveService implements OnPlayerJoin {
+	private PlayerSaveCollection: Collection<ReturnType<typeof PlayerSerDes.serialize>>;
+	constructor() {
 		if (RunService.IsStudio()) setConfig({ dataStoreService: new DataStoreServiceMock() });
-	}
-	async onPlayerJoin(player: Player) {
-		const PLAYER_SAVE_COLLECTION = createCollection("PlayerSave", {
+		this.PlayerSaveCollection = createCollection("PlayerSave", {
 			defaultData: PlayerSerDes.serialize(DefaultPlayerSave),
 		});
-		const document = await PLAYER_SAVE_COLLECTION.load("PlayerSave", [player.UserId]);
+	}
+	async onPlayerJoin(player: Player) {
+		const document = await this.PlayerSaveCollection.load("PlayerSave", [player.UserId]);
 		store.setPlayerSave(player, PlayerSerDes.deserialize(document.read().buffer, document.read().blobs));
-		store.patchPlayerSave(player, { eee: 1111 });
-		print(store.getState(selectPlayerSave));
 		document.beforeSave(() =>
 			document.write(PlayerSerDes.serialize(store.getState(selectPlayerSave).get(player) as PlayerSave)),
 		);
+		document.beforeClose(() => store.deletePlayerSave(player));
 	}
 }

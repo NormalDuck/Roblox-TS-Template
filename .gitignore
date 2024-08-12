@@ -1,5 +1,6 @@
 /node_modules
 /out
+/dist
 /include
 *.tsbuildinfo
 flamework.build

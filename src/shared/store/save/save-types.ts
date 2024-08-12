@@ -1,13 +1,7 @@
 import { Flamework } from "@flamework/core";
 
-export interface PlayerSave {
-    eee: number
-    aaa: string
-}
+export interface PlayerSave {}
 
-export const DefaultPlayerSave: PlayerSave = {
-    eee: 123,
-    aaa: "Hello, World!"
-};
+export const DefaultPlayerSave: PlayerSave = {};
 
 export const PlayerSaveGuard = Flamework.createGuard<PlayerSave>();
