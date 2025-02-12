@@ -1,1 +1,2 @@
-My personalized ts-template with basic ui functionality and server hooks. Some code is taken from other template repositories.
+# Archive
+This repository is no longer maintained because I don't find it useful anymore.
